@@ -71,10 +71,11 @@ class TuringMachineCode:
                 couple.append(self.ajout_etat(i))
 
         self.etat_transi.append(couple)
-        self.value.append([])
-        self.deplacement.append([])
-        self.value[-1].append(transition[1][0])
-        self.deplacement[-1].append(transition[1][1])
+        for i in transition[1]:
+            self.value.append([])
+            self.deplacement.append([])
+            self.value[-1].append(transition[1][0])
+            self.deplacement[-1].append(transition[1][1])
 
         self.init_ruban(len(transition[1]))
 
@@ -84,15 +85,27 @@ class TuringMachineCode:
             return False
         if self.final is None:
             print("No accept state define")
+            return False
+        for etat in self.etat:
+            transi_value = []
+            for i, value in enumerate(self.etat_transi):
+                if etat == value[0]:
+                    verif = []
+                    for r in self.value[i]:
+                        verif.append(r[0])
+                    if verif in transi_value:
+                        print(self.etat[value[0]], "invalide")
+                        return False
+                    transi_value.append(verif.copy())
+        return True
 
 
 if __name__ == '__main__':
     machine = TuringMachineCode("test")
-    machine.init_etat_initial("init")
-    machine.init_etat_initial("init2")
-    machine.init_final("accept")
-    machine.init_final("accept2")
-    machine.init_transition_ruban([["q0", "q1"], [["1", "2"], "Right"]])
-    print(machine.etat)
-    print(machine.ruban, machine.etat_transi, machine.value, machine.tete)
-    print(machine.etat_nombre, machine.value, machine.deplacement)
+    machine.init_etat_initial("qinit")
+    machine.init_final("qaccept")
+    machine.init_transition_ruban([["q0", "q1"], [[["1", "2"], "Right"], [["1", "2"], "Right"]]])
+    machine.init_transition_ruban([["q0", "q1"], [[["1", "2"], "Right"], [["1", "2"], "Right"]]])
+    print(machine.value)
+    print()
+    print(machine.machine_turing_integrity())
