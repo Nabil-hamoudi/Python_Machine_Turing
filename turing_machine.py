@@ -1,5 +1,8 @@
 import sys
 import argparse
+import curses
+from curses import wrapper
+
 
 class TuringMachineCode:
     # initialise la machine de turing en prenant pour entrée
@@ -97,11 +100,14 @@ def instance_machine(machine, word):
     etat = machine.init
     value = (ruban, tete, etat)
     while type(value) == tuple:
+        print(value)
         value = mouvement(machine, value[0], value[1], value[2])
     print(value)
 
 
 def mouvement(machine, ruban, tete, etat):
+    if etat == machine.final:
+        return True
     transition = machine.etat_transi[etat]
     rec = []
     rec = [field[tete[i]] for i, field in enumerate(ruban)]
@@ -123,16 +129,7 @@ def mouvement(machine, ruban, tete, etat):
                             ruban[i].append("_")
                     case "-":
                         pass
-            if etat == machine.final:
-                print(ruban)
-                print(tete)
-                return True
-            else:
-                print(ruban)
-                print(tete)
-                return (ruban, tete, etat)
-    print(ruban)
-    print(tete)
+            return (ruban, tete, etat)
     return False
 
 
