@@ -5,7 +5,7 @@ Python Version: 3.11, avec module Tkinter
 # Fonctionnement Projet machine turing
 
 Pour lancer une nouvelle instance de machine de turing il suffit de lancer le fichier python `interface_graphique.py`, d'ici vous pouvez importer votre
-machine de turing préalablement écrite suivant les régles d'écriture (section: fichier) en appuyant sur le bouton 'import a machine'
+machine de turing préalablement écrite suivant les régles d'écriture `(section: Formatage fichier)` et en appuyant sur le bouton 'import a machine'
 et entrée un mot dans l'espace a gauche du bouton start.
 
 Il est aussi possible de lancer une instance a partir du code python `turing_machine.py` avec une commande sous la forme:
