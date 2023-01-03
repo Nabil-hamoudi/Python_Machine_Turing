@@ -1,3 +1,7 @@
+// Sur une machine de turing a 1 ruban
+// retourne sur la premiere occurence
+// de la lettre reconnu par la machine
+
 name: SEARCH
 init: I
 accept: F

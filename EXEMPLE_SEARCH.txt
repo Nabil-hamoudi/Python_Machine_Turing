@@ -1,12 +1,63 @@
-name: EXAMPLE_SEARCH
+// Exemple fichier de recherche
+
+// definission du nom d'une machine de machine turing
+// cette etape est importante car cest elle qui deffinit
+// la machine en cas d'import
+name: EXEMPLE_SEARCH
+
+// Definitions du nom de l'etat d'initialisation
+// Definition est tel que:
+// ################
+// # init: 'etat' #
+// ################
 init: I
+
+// Definitions du de l'etat final
+// Definition est tel que:
+// ##################
+// # accept: 'etat' #
+// ##################
 accept: F
-import: RIGHT.mt
-import: SEARCH.mt
 
+// Afin d'utiliser d'autre machine de turing en importation
+// Il faut definir le chemin vers la machine de turing dans
+// l'arborescence fichier tel que:
+// ##############################
+// # import: Chemin/machine.txt #
+// ##############################
+import: RIGHT.txt
+
+// Plusieur machine peuvent etre importé mais leur nom ne doivent pas etre le meme
+import: SEARCH.txt
+
+// une machine de turing importé doit avoir la meme nombre
+// de ruban que la machine appelante et remplace les valeurs
+// final d'une transition tel que:
+// ###################
+// # etat1,a         #
+// # etat2,MACHINE,- #
+// ###################
 I,0
-q0,RIGHT,-
+q1,RIGHT,-
 
-q0,0
+// chaque instruction est defini
+// comme dans machine_turing_simultor
+//
+// pour ajouter des valeurs il suffit
+// dajouter de nouvelles valeurs tel que pour 2 ruban:
+// ##############
+// # q1,0,0     #
+// # q2,0,0,-,- #
+// ##############
+q1,0
+q2,0,-
+
+q1,1
+q2,1,-
+
+q1,0
+F,SEARCH,-
+
+q1,1
 F,SEARCH,-
 

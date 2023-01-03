@@ -1,4 +1,7 @@
-// Copie sur une machine a 2 ruban le premier ruban sur le 2eme a commencer par l'endroit de la tete de lecture du 2eme
+// Copie sur une machine a 2 ruban
+// Le premier ruban sur le 2eme
+// a partir de l'endoit ou se trouve les tetes de lecture
+
 name: COPY
 init: I
 accept: F

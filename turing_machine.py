@@ -6,14 +6,16 @@ DEPLACEMENT = ("<", ">", "-")
 
 class TuringMachineCode:
     # initialise la machine de turing en prenant pour entrée
-    # le nombre de ruban qui doit etre au moins de 1,
     # les transition [[q1,q2], [[[value1, value2], DEPLACEMENT]...]],
     # l'état initial et l'état final,
-    # Les états doivent étre numèroté et un dictionnaire doit etre donnée dans
-    # etat avec leur noms
+    # Les machine correspondant aux importation
+    # Les états sont numèroté et un dictionnaire est donnée entre les numero et leur noms
     # le nombre de ruban doit etre superieur ou egal a 1
 
     def __init__(self):
+        """
+        Initialise les valeur de base
+        """
         self.name = "Untitled"
         self.init = None
         self.final = None
@@ -28,6 +30,13 @@ class TuringMachineCode:
         self.count_mt = 0
 
     def connect_machine(self, name, prec):
+        """
+        connect une machine a partir du nom de celle ci
+        et les valeur de la transition
+        cette fonction crée une nouvelle transition
+        entre l'état reconnaissant et une copie de la machine importé
+        et entre la copie de la machine importé et le 2eme etat de la transition
+        """
         second_etat = prec[0][1]
         prec[0][1] = self.etat[self.machine_import_init[name]]
         value_acc = []
@@ -45,12 +54,15 @@ class TuringMachineCode:
             for j in self.etat_transi[i].keys():
                 if self.etat_transi[i][j][0] == self.machine_import_fin[name]:
                     self.etat_transi[i][j] = (second_etat, self.etat_transi[i][j][1])
-
-        self.machine_import_init = {}
-        self.machine_import_fin = {}
+        del self.machine_import_init[name]
+        del self.machine_import_fin[name]
         self.import_machine(self.machine_objet[name])
 
     def import_machine(self, machine):
+        """
+        ajoute toute les transition de la machine importé machine
+        dans cette machine definit par import:
+        """
         if type(machine) == str:
             return machine
         else:
@@ -79,9 +91,16 @@ class TuringMachineCode:
         self.machine_objet[machine.name] = machine
 
     def change_name(self, name):
+        """
+        change le nom de la machine de turing
+        """
         self.name = name
 
     def ajout_etat(self, etat):
+        """
+        prend en entrée un etat en str
+        et ressors son numero
+        """
         for i in self.etat.keys():
             if etat == self.etat[i]:
                 return i
@@ -92,18 +111,27 @@ class TuringMachineCode:
         return self.etat_nombre - 1
 
     def init_etat_initial(self, init):
+        """
+        initialiser l'etat initial defini par init:
+        """
         if self.init is None:
             self.init = self.ajout_etat(init)
         else:
             return "Init initialiser 2 fois"
 
     def init_final(self, final):
+        """
+        initialiser l'etat final defini par accept:
+        """
         if self.final is None:
             self.final = self.ajout_etat(final)
         else:
             return "Accept initialiser 2 fois"
 
     def init_transition_ruban(self, transition):
+        """
+        Initialise les transition des rubans dans la machine de turing
+        """
         value_rec = []
         value_new = []
         direction = []
@@ -133,13 +161,20 @@ class TuringMachineCode:
             return str("le nombre de ruban de la transition ne match pas ceux des precedent")
 
     def machine_turing_integrity(self):
+        """
+        Verifie l'integrité d'une machine de turing
+        et si elle peut s'éxécuter
+        """
         if self.init is None:
             return "No init define"
         if self.final is None:
             return "No accept state define"
 
-    # Crée une nouvelle instance de la machine de turing
     def instance_machine(self, word):
+        """
+        Cree une nouvelle instance de la machine de turing
+        avec un mot
+        """
         ruban = []
         direction = []
         new = []
@@ -156,6 +191,9 @@ class TuringMachineCode:
         return (ruban, tete, etat, direction, [], new)
 
     def mouvement(self, ruban, tete, etat):
+        """
+        effectue les mouvement de la machine un par un
+        """
         mouv_ruban = []
         mouv_direction_droite = []
         new = []
@@ -196,6 +234,9 @@ class TuringMachineCode:
 
 
 def read_file(path):
+    """
+    Lit un fichier contenant le code d'une machine de turing et genere un nouvel objet TuringMachineCode
+    """
     f = open(path, "r")
     lines = f.readlines()
     machine = TuringMachineCode()
@@ -229,7 +270,6 @@ def read_file(path):
                             prec[1].append([[value.strip()]])
                     else:
                         return ("Incorrect number of elements in line " + str(i + 1))
-
             else:
                 line = str(line).split(",")
                 if '' in line:

@@ -11,13 +11,14 @@ HAUTEUR = 100
 TAILLE_SQUARE = 50
 COLOR_SQUARE = "red"
 
-PAUSE = 300
-SPEED = 30
+PAUSE = 400
+SPEED = 45
 PIXEL_JUMP = 2.5
 
 canvas = None
 
 def deplacement(Right, ruban, mouvement=0):
+    ### Fais avancer les rubans et lettres
     if mouvement < (TAILLE_SQUARE - PIXEL_JUMP):
         for i in ruban:
             for j in square[i]:
@@ -50,6 +51,8 @@ def deplacement(Right, ruban, mouvement=0):
 
 
 def ruban_affichage(number):
+    ### genere une case de taille number * HAUTEUR
+    ### un nombre number de ruban
     global fen, canvas, label_canvas, etat, square
     label_canvas = tk.Canvas(fen,
                              width=LARGEUR,
@@ -90,10 +93,13 @@ def ruban_affichage(number):
 
 
 def update_etat(new_etat):
+    ### modifie l'affichage de l'ètat sur la fenetre
     label_canvas.itemconfig(etat, text="State: " + new_etat)
 
 
 def value_update(ruban, tete, direction):
+    ### Met a jour les valeur avec les nouvelle valeur du ruban
+    ### ou supprimer une valeur quand celle ci vaut '_'
     for i, j in enumerate(tete):
         if direction[i] is None:
             correct_direction = 0
@@ -119,6 +125,9 @@ def value_update(ruban, tete, direction):
 
 
 def machine_deroulement(output):
+    ### Gere le deroulement de la machine
+    ### permet de savoir si la machine est accepter ou rejeter
+    ### et l'appel des fonction de modifiacation de l'affichage
     if type(output) == bool:
         if output:
             mb.showinfo('etat', 'Accepter')
@@ -137,6 +146,7 @@ def machine_deroulement(output):
 
 
 def start(word):
+    ### Commence le deroulement de l'instance d'une machine de turing
     if canvas is None:
         mb.showerror("APPLICATION_ERROR", "Pas de machine de turing initialiser")
         return False
@@ -147,6 +157,7 @@ def start(word):
 
 
 def reset():
+    ### Reinitialise le canvas contenant le label et les ruban
     global value
     if canvas is not None:
         label_canvas.destroy()
@@ -156,6 +167,7 @@ def reset():
 
 
 def file_chargement():
+    # charge le fichier contenant la macchine de turing
     global machine_turing, value, canvas
     machine_turing = turing_machine.read_file(fd.askopenfilename())
     if type(machine_turing) == str:
@@ -165,9 +177,10 @@ def file_chargement():
         reset()
 
 
+# Initialisation fentre et interaction utilisateur
 fen = tk.Tk()
 
-fen.title("Génération de terrain de jeu")
+fen.title("Machine Turing")
 fen.config(bg=COULEUR_FOND)
 fen.resizable(width=False, height=False)
 

@@ -1,4 +1,7 @@
 // Copy 2 nombre dans le ruban 2 depuis le ruban 1
+// Remplace les donnée du ruban 1 par #
+// Cette fonction a ete crée pour repondre aux besoins de la machine TRIE.txt
+
 name: COPY2_2DIGIT
 init: I
 accept: F
