@@ -3,6 +3,9 @@ import argparse
 
 DEPLACEMENT = ("<", ">", "-")
 
+# valeur correspondant a l'activation ou non des optimisation de machine de turing
+SIMPLIFICATION_ACTIVE = True
+##################################################################################
 
 class TuringMachineCode:
     # initialise la machine de turing en prenant pour entrée
@@ -169,6 +172,42 @@ class TuringMachineCode:
             return "No init define"
         if self.final is None:
             return "No accept state define"
+        if SIMPLIFICATION_ACTIVE:
+            self.simplification()
+        return self
+
+    def simplification(self):
+        """
+        Simplification des transition
+        """
+        simplifie_transi = None
+        for etat_init in self.etat_transi.keys():
+            for reco_value in self.etat_transi[etat_init].keys():
+                etat_fin = self.etat_transi[etat_init][reco_value][0]
+                value_fin = self.etat_transi[etat_init][reco_value][1][0]
+                deplacement = self.etat_transi[etat_init][reco_value][1][1]
+                stay = True
+                for i in deplacement:
+                    if i != '-':
+                        stay = False
+                for i in range(len(value_fin)):
+                    if reco_value[i] != value_fin[i]:
+                        stay = False
+                if etat_fin == self.final:
+                    stay = False
+                if stay:
+                    simplifie_transi = (etat_init, reco_value, etat_fin)
+        if simplifie_transi is None:
+            return True
+        # nouvel etat final, value_final, direction
+        if self.etat_transi[simplifie_transi[2]] != {}:
+            new_transi = (self.etat_transi[simplifie_transi[2]][simplifie_transi[1]][0],
+                          self.etat_transi[simplifie_transi[2]][simplifie_transi[1]][1][0],
+                          self.etat_transi[simplifie_transi[2]][simplifie_transi[1]][1][1])
+            self.etat_transi[simplifie_transi[0]][simplifie_transi[1]] = (new_transi[0], (new_transi[1], new_transi[2]))
+        else:
+            del self.etat_transi[simplifie_transi[0]][simplifie_transi[1]]
+        self.simplification()
 
     def instance_machine(self, word):
         """
@@ -291,6 +330,7 @@ def read_file(path):
                 if type(info) == str:
                     return ("line number: " + str(i + 1) + "\n" + info)
                 prec = None
+    machine = machine.machine_turing_integrity()
     return machine
 
 
