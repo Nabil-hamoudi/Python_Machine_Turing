@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import filedialog as fd
 from tkinter import messagebox as mb
 import turing_machine
+import argparse
+import sys
 
 COULEUR_FOND = "black"
 
@@ -18,7 +20,7 @@ PIXEL_JUMP = 2.5
 canvas = None
 
 def deplacement(Right, ruban, mouvement=0):
-    ### Fais avancer les rubans et lettres
+    """Fais avancer les rubans et lettres"""
     if mouvement < (TAILLE_SQUARE - PIXEL_JUMP):
         for i in ruban:
             for j in square[i]:
@@ -51,8 +53,10 @@ def deplacement(Right, ruban, mouvement=0):
 
 
 def ruban_affichage(number):
-    ### genere une case de taille number * HAUTEUR
-    ### un nombre number de ruban
+    """
+    genere une case de taille number * HAUTEUR
+    un nombre number de ruban
+    """
     global fen, canvas, label_canvas, etat, square
     label_canvas = tk.Canvas(fen,
                              width=LARGEUR,
@@ -93,13 +97,15 @@ def ruban_affichage(number):
 
 
 def update_etat(new_etat):
-    ### modifie l'affichage de l'ètat sur la fenetre
+    """modifie l'affichage de l'ètat sur la fenetre"""
     label_canvas.itemconfig(etat, text="State: " + new_etat)
 
 
 def value_update(ruban, tete, direction):
-    ### Met a jour les valeur avec les nouvelle valeur du ruban
-    ### ou supprimer une valeur quand celle ci vaut '_'
+    """
+    Met a jour les valeur avec les nouvelle valeur du ruban
+    ou supprimer une valeur quand celle ci vaut '_'
+    """
     for i, j in enumerate(tete):
         if direction[i] is None:
             correct_direction = 0
@@ -125,9 +131,11 @@ def value_update(ruban, tete, direction):
 
 
 def machine_deroulement(output):
-    ### Gere le deroulement de la machine
-    ### permet de savoir si la machine est accepter ou rejeter
-    ### et l'appel des fonction de modifiacation de l'affichage
+    """
+    Gere le deroulement de la machine
+    permet de savoir si la machine est accepter ou rejeter
+    et l'appel des fonction de modifiacation de l'affichage
+    """
     if type(output) == bool:
         if output:
             mb.showinfo('etat', 'Accepter')
@@ -146,7 +154,9 @@ def machine_deroulement(output):
 
 
 def start(word):
-    ### Commence le deroulement de l'instance d'une machine de turing
+    """
+    Commence le deroulement de l'instance d'une machine de turing
+    """
     if canvas is None:
         mb.showerror("APPLICATION_ERROR", "Pas de machine de turing initialiser")
         return False
@@ -157,7 +167,9 @@ def start(word):
 
 
 def reset():
-    ### Reinitialise le canvas contenant le label et les ruban
+    """
+    Reinitialise le canvas contenant le label et les ruban
+    """
     global value
     if canvas is not None:
         label_canvas.destroy()
@@ -166,16 +178,22 @@ def reset():
     value = [[] for _ in range(len(machine_turing.ruban))]
 
 
-def file_chargement():
-    # charge le fichier contenant la macchine de turing
+def file_chargement(opti):
+    """
+    charge le fichier contenant la macchine de turing
+    """
     global machine_turing, value, canvas
-    machine_turing = turing_machine.read_file(fd.askopenfilename())
+    machine_turing = turing_machine.read_file(fd.askopenfilename(), opti)
     if type(machine_turing) == str:
         canvas = None
         mb.showerror('FILE_ERROR', machine_turing)
     else:
         reset()
 
+
+AP = argparse.ArgumentParser()
+AP.add_argument('--opti', help='activé ou non les optimisation de machine de turing', type=bool, default=False, nargs='?')
+args = AP.parse_args(sys.argv[1::])
 
 # Initialisation fentre et interaction utilisateur
 fen = tk.Tk()
@@ -184,7 +202,7 @@ fen.title("Machine Turing")
 fen.config(bg=COULEUR_FOND)
 fen.resizable(width=False, height=False)
 
-bouton_file = tk.Button(fen, fg="red", bg="black", text="import a machine", command=file_chargement)
+bouton_file = tk.Button(fen, fg="red", bg="black", text="import a machine", command=lambda: file_chargement(args.opti))
 bouton_file.grid(row=2, column=4, padx=10, pady=10)
 
 word_field = tk.Entry(fen, width=50, font='Rockwell, 15')

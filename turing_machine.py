@@ -3,10 +3,6 @@ import argparse
 
 DEPLACEMENT = ("<", ">", "-")
 
-# valeur correspondant a l'activation ou non des optimisation de machine de turing
-SIMPLIFICATION_ACTIVE = True
-##################################################################################
-
 class TuringMachineCode:
     # initialise la machine de turing en prenant pour entrée
     # les transition [[q1,q2], [[[value1, value2], DEPLACEMENT]...]],
@@ -163,7 +159,7 @@ class TuringMachineCode:
         elif len(self.ruban) != nombre_ruban:
             return str("le nombre de ruban de la transition ne match pas ceux des precedent")
 
-    def machine_turing_integrity(self):
+    def machine_turing_integrity(self, opti):
         """
         Verifie l'integrité d'une machine de turing
         et si elle peut s'éxécuter
@@ -172,9 +168,8 @@ class TuringMachineCode:
             return "No init define"
         if self.final is None:
             return "No accept state define"
-        if SIMPLIFICATION_ACTIVE:
+        if opti:
             self.simplification()
-        return self
 
     def simplification(self):
         """
@@ -272,7 +267,7 @@ class TuringMachineCode:
         return False
 
 
-def read_file(path):
+def read_file(path, opti):
     """
     Lit un fichier contenant le code d'une machine de turing et genere un nouvel objet TuringMachineCode
     """
@@ -296,7 +291,7 @@ def read_file(path):
                     if type(info) == str:
                         return ("line number: " + str(i + 1) + "\n" + info)
                 elif line[:7] == "import:":
-                    info = machine.import_machine(read_file(line[7:].strip()))
+                    info = machine.import_machine(read_file(line[7:].strip(), opti))
                     if type(info) == str:
                         return ("line number:" + str(i + 1) + "\n" + line[7:].strip() + '\n' + info)
                 else:
@@ -330,7 +325,9 @@ def read_file(path):
                 if type(info) == str:
                     return ("line number: " + str(i + 1) + "\n" + info)
                 prec = None
-    machine = machine.machine_turing_integrity()
+    info = machine.machine_turing_integrity(opti)
+    if type(info) == str:
+        return info
     return machine
 
 
@@ -338,9 +335,10 @@ if __name__ == '__main__':
     AP = argparse.ArgumentParser()
     AP.add_argument('file', help='fichier contenant le code de la machine de turing', type=str)
     AP.add_argument('word', help='mot a entrée dans la machine de turing', type=str)
+    AP.add_argument('--opti', help='activé ou non les optimisation de machine de turing', type=bool, default=False, nargs='?')
     args = AP.parse_args(sys.argv[1::])
 
-    machine = read_file(args.file)
+    machine = read_file(args.file, args.opti)
 
     if type(machine) == str:
         print(machine)
@@ -348,6 +346,7 @@ if __name__ == '__main__':
 
     value = machine.instance_machine(args.word)
     while type(value) == tuple:
-        print(value[:3])
+        print(machine.etat[value[2]])
+        print(value[:2], end='\n')
         value = machine.mouvement(value[0], value[1], value[2])
     print(value)

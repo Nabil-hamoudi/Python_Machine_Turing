@@ -40,6 +40,9 @@ import: SEARCH.txt
 I,0
 q1,RIGHT,-
 
+I,1
+q1,RIGHT,-
+
 // chaque instruction est defini
 // comme dans machine_turing_simultor
 //
