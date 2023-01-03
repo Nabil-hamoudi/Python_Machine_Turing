@@ -54,7 +54,7 @@ def deplacement(Right, ruban, mouvement=0):
 
 def ruban_affichage(number):
     """
-    genere une case de taille number * HAUTEUR
+    gènere une case de taille number * HAUTEUR
     un nombre number de ruban
     """
     global fen, canvas, label_canvas, etat, square
@@ -97,14 +97,14 @@ def ruban_affichage(number):
 
 
 def update_etat(new_etat):
-    """modifie l'affichage de l'ètat sur la fenetre"""
+    """modifie l'affichage de l'état sur la fenetre"""
     label_canvas.itemconfig(etat, text="State: " + new_etat)
 
 
 def value_update(ruban, tete, direction):
     """
-    Met a jour les valeur avec les nouvelle valeur du ruban
-    ou supprimer une valeur quand celle ci vaut '_'
+    Met à jour les valeurs avec les nouvelles valeurs du ruban
+    ou supprime une valeur quand celle ci vaut '_'
     """
     for i, j in enumerate(tete):
         if direction[i] is None:
@@ -132,7 +132,7 @@ def value_update(ruban, tete, direction):
 
 def machine_deroulement(output):
     """
-    Gere le deroulement de la machine
+    Gére le déroulement de la machine
     permet de savoir si la machine est accepter ou rejeter
     et l'appel des fonction de modifiacation de l'affichage
     """
@@ -155,7 +155,7 @@ def machine_deroulement(output):
 
 def start(word):
     """
-    Commence le deroulement de l'instance d'une machine de turing
+    Commence le déroulement de l'instance d'une machine de turing
     """
     if canvas is None:
         mb.showerror("APPLICATION_ERROR", "Pas de machine de turing initialiser")
@@ -168,7 +168,7 @@ def start(word):
 
 def reset():
     """
-    Reinitialise le canvas contenant le label et les ruban
+    Reinitialise le canvas contenant le label et les rubans
     """
     global value
     if canvas is not None:
@@ -180,7 +180,7 @@ def reset():
 
 def file_chargement(opti):
     """
-    charge le fichier contenant la macchine de turing
+    charge le fichier contenant la machine de turing
     """
     global machine_turing, value, canvas
     machine_turing = turing_machine.read_file(fd.askopenfilename(), opti)
@@ -195,7 +195,7 @@ AP = argparse.ArgumentParser()
 AP.add_argument('--opti', help='activé ou non les optimisation de machine de turing', type=bool, default=False, nargs='?')
 args = AP.parse_args(sys.argv[1::])
 
-# Initialisation fentre et interaction utilisateur
+# Initialisation la fenetre et les interaction utilisateur
 fen = tk.Tk()
 
 fen.title("Machine Turing")
