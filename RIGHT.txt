@@ -1,5 +1,5 @@
 // Sur une machine a un ruban
-// Se repalace a la fin de celui ci
+// Se replace à la fin de celui ci
 
 name: RIGHT
 init: I
