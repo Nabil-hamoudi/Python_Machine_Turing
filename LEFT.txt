@@ -1,5 +1,5 @@
 // Sur une machine a un ruban
-// Se remplace au debut de celui ci
+// Se remplace au debut du premier ruban
 
 name: LEFT
 init: I
