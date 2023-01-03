@@ -1,37 +1,37 @@
 // Exemple fichier de recherche
 
-// definission du nom d'une machine de machine turing
-// cette etape est importante car cest elle qui deffinit
-// la machine en cas d'import
+// Définition du nom d'une machine de machine turing
+// cette etape est importante car cest elle qui definit
+// le nom de la machine en cas d'import
 name: EXEMPLE_SEARCH
 
-// Definitions du nom de l'etat d'initialisation
-// Definition est tel que:
+// Définitions du nom de l'état d'initialisation
+// Définis tel que:
 // ################
-// # init: 'etat' #
+// #  init: etat  #
 // ################
 init: I
 
-// Definitions du de l'etat final
-// Definition est tel que:
+// Définitions du de l'état final
+// Définition est tel que:
 // ##################
-// # accept: 'etat' #
+// #  accept: etat  #
 // ##################
 accept: F
 
-// Afin d'utiliser d'autre machine de turing en importation
-// Il faut definir le chemin vers la machine de turing dans
+// Afin d'utiliser d'autres machines de turing en importation
+// Il faut définir leurs chemin vers la machine de turing dans
 // l'arborescence fichier tel que:
 // ##############################
 // # import: Chemin/machine.txt #
 // ##############################
 import: RIGHT.txt
 
-// Plusieur machine peuvent etre importé mais leur nom ne doivent pas etre le meme
+// Plusieurs machines peuvent être importé mais leurs noms définis par 'name:' ne doivent pas être les mêmes
 import: SEARCH.txt
 
-// une machine de turing importé doit avoir la meme nombre
-// de ruban que la machine appelante et remplace les valeurs
+// une machine de turing importé doit avoir le même nombre
+// de ruban que la machine appelante et remplacer les valeurs
 // final d'une transition tel que:
 // ###################
 // # etat1,a         #
@@ -43,8 +43,7 @@ q1,RIGHT,-
 I,1
 q1,RIGHT,-
 
-// chaque instruction est defini
-// comme dans machine_turing_simultor
+// chaque instruction est défini comme dans machine_turing_simultor
 //
 // pour ajouter des valeurs il suffit
 // dajouter de nouvelles valeurs tel que pour 2 ruban:
