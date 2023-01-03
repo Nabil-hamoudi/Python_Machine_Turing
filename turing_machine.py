@@ -1,7 +1,7 @@
 import sys
 import argparse
-import curses
-from curses import wrapper
+
+DEPLACEMENT = ("<", ">", "-")
 
 
 class TuringMachineCode:
@@ -12,6 +12,7 @@ class TuringMachineCode:
     # Les états doivent étre numèroté et un dictionnaire doit etre donnée dans
     # etat avec leur noms
     # le nombre de ruban doit etre superieur ou egal a 1
+
     def __init__(self):
         self.name = "Untitled"
         self.init = None
@@ -21,13 +22,68 @@ class TuringMachineCode:
         self.etat_transi = {}
         self.ruban = []
         self.tete = []
+        self.machine_import_init = {}
+        self.machine_import_fin = {}
+        self.machine_objet = {}
+        self.count_mt = 0
+
+    def connect_machine(self, name, prec):
+        second_etat = prec[0][1]
+        prec[0][1] = self.etat[self.machine_import_init[name]]
+        value_acc = []
+        direction = []
+        for i in prec[1]:
+            value_acc.append(i[0][0])
+            direction.append(i[1])
+        value_rec = tuple(value_acc)
+        direction = tuple(direction)
+        info = self.init_transition_ruban([prec[0], [[[i, i], '-'] for i in value_rec]])
+        if type(info) == str:
+            return info
+        second_etat = self.ajout_etat(second_etat)
+        for i in self.etat_transi.keys():
+            for j in self.etat_transi[i].keys():
+                if self.etat_transi[i][j][0] == self.machine_import_fin[name]:
+                    self.etat_transi[i][j] = (second_etat, self.etat_transi[i][j][1])
+
+        self.machine_import_init = {}
+        self.machine_import_fin = {}
+        self.import_machine(self.machine_objet[name])
+
+    def import_machine(self, machine):
+        if type(machine) == str:
+            return machine
+        else:
+            conversion = {}
+            self.count_mt += 1
+            add = '_' + str(self.count_mt)
+            if machine.name in self.machine_import_init.keys():
+                return "on ne peut pas importer la meme machine plusieurs fois"
+            else:
+                for i in machine.etat.keys():
+                    num = self.ajout_etat(machine.etat[i] + add)
+                    conversion[i] = num
+                    if i == machine.init:
+                        self.machine_import_init[machine.name] = num
+                    elif i == machine.final:
+                        self.machine_import_fin[machine.name] = num
+                for i in machine.etat_transi.keys():
+                    etat_tran = {}
+                    for j in machine.etat_transi[i].keys():
+                        value = machine.etat_transi[i][j]
+                        etat_tran[j] = (conversion[value[0]], value[1])
+                    self.etat_transi[conversion[i]] = etat_tran
+
+                self.ruban = machine.ruban
+                self.tete = machine.tete
+        self.machine_objet[machine.name] = machine
 
     def change_name(self, name):
         self.name = name
 
     def ajout_etat(self, etat):
         for i in self.etat.keys():
-            if etat in self.etat[i]:
+            if etat == self.etat[i]:
                 return i
 
         self.etat[self.etat_nombre] = etat
@@ -38,16 +94,14 @@ class TuringMachineCode:
     def init_etat_initial(self, init):
         if self.init is None:
             self.init = self.ajout_etat(init)
-            return True
-        print("Init initialiser 2 fois", end=" ")
-        return False
+        else:
+            return "Init initialiser 2 fois"
 
     def init_final(self, final):
         if self.final is None:
             self.final = self.ajout_etat(final)
-            return True
-        print("Accept initialiser 2 fois", end=" ")
-        return False
+        else:
+            return "Accept initialiser 2 fois"
 
     def init_transition_ruban(self, transition):
         value_rec = []
@@ -56,6 +110,8 @@ class TuringMachineCode:
         for i in transition[1]:
             value_rec.append(i[0][0])
             value_new.append(i[0][1])
+            if i[1] not in DEPLACEMENT:
+                return (str(i[1]) + ' is an invalide argument for deplacement did you mean "<", ">" or "-"?')
             direction.append(i[1])
 
         value_rec = tuple(value_rec)
@@ -63,8 +119,7 @@ class TuringMachineCode:
         direction = tuple(direction)
 
         if value_rec in self.etat_transi[self.ajout_etat(transition[0][0])].keys():
-            print(transition[0][0], "error multiple possibility into value(s)", value_rec, end=" ")
-            return False
+            return (str(transition[0][0]) + " error multiple possibility into value(s)" + str(value_rec))
 
         self.etat_transi[self.ajout_etat(transition[0][0])][value_rec] = (self.ajout_etat(transition[0][1]), (value_new, direction))
 
@@ -74,63 +129,70 @@ class TuringMachineCode:
             for _ in range(nombre_ruban):
                 self.ruban.append([])
                 self.tete.append(0)
-            return True
         elif len(self.ruban) != nombre_ruban:
-            print("le nombre de ruban de la transition ne match pas ceux des precedent", end=" ")
-            return False
-        return True
+            return str("le nombre de ruban de la transition ne match pas ceux des precedent")
 
     def machine_turing_integrity(self):
         if self.init is None:
-            print("No init define")
-            return False
+            return "No init define"
         if self.final is None:
-            print("No accept state define")
-            return False
-        return True
+            return "No accept state define"
 
+    # Crée une nouvelle instance de la machine de turing
+    def instance_machine(self, word):
+        ruban = []
+        direction = []
+        new = []
+        for i in self.ruban:
+            ruban.append(i.copy())
+            direction.append(None)
+            new.append(False)
+        ruban[0] = [i for i in word]
+        for field in ruban:
+            if field == []:
+                field.append("_")
+        tete = self.tete.copy()
+        etat = self.init
+        return (ruban, tete, etat, direction, [], new)
 
-def instance_machine(machine, word):
-    ruban = machine.ruban.copy()
-    ruban[0] = [i for i in word]
-    for field in ruban:
-        if field == []:
-            field.append("_")
-    tete = machine.tete.copy()
-    etat = machine.init
-    value = (ruban, tete, etat)
-    while type(value) == tuple:
-        print(value)
-        value = mouvement(machine, value[0], value[1], value[2])
-    print(value)
-
-
-def mouvement(machine, ruban, tete, etat):
-    if etat == machine.final:
-        return True
-    transition = machine.etat_transi[etat]
-    rec = []
-    rec = [field[tete[i]] for i, field in enumerate(ruban)]
-    rec = tuple(rec)
-    for i in transition.keys():
-        if rec == i:
-            etat = transition[rec][0]
-            for i, value in enumerate(transition[rec][1][0]):
-                ruban[i][tete[i]] = value
-                match transition[rec][1][1][i]:
-                    case "<":
-                        tete[i] -= 1
-                        if tete[i] == -1:
-                            tete[i] = 0
-                            ruban[i].insert(0, "_")
-                    case ">":
-                        tete[i] += 1
-                        if tete[i] == len(ruban[i]):
-                            ruban[i].append("_")
-                    case "-":
-                        pass
-            return (ruban, tete, etat)
-    return False
+    def mouvement(self, ruban, tete, etat):
+        mouv_ruban = []
+        mouv_direction_droite = []
+        new = []
+        if etat == self.final:
+            return True
+        transition = self.etat_transi[etat]
+        rec = []
+        rec = [field[tete[i]] for i, field in enumerate(ruban)]
+        rec = tuple(rec)
+        for i in transition.keys():
+            if rec == i:
+                etat = transition[rec][0]
+                for i, value in enumerate(transition[rec][1][0]):
+                    ruban[i][tete[i]] = value
+                    match transition[rec][1][1][i]:
+                        case "<":
+                            tete[i] -= 1
+                            if tete[i] == -1:
+                                tete[i] = 0
+                                ruban[i].insert(0, "_")
+                                new.append(True)
+                            else:
+                                new.append(False)
+                            mouv_ruban.append(i)
+                            mouv_direction_droite.append(False)
+                        case ">":
+                            tete[i] += 1
+                            if tete[i] == len(ruban[i]):
+                                ruban[i].append("_")
+                            new.append(False)
+                            mouv_ruban.append(i)
+                            mouv_direction_droite.append(True)
+                        case "-":
+                            new.append(False)
+                            mouv_direction_droite.append(None)
+                return (ruban, tete, etat, mouv_direction_droite, mouv_ruban, new)
+        return False
 
 
 def read_file(path):
@@ -146,35 +208,48 @@ def read_file(path):
                 if line[:5] == "name:":
                     machine.change_name(line[5:].strip())
                 elif line[:5] == "init:":
-                    if not machine.init_etat_initial(line[5:].strip()):
-                        print("line number: ", i)
-                        return False
+                    info = machine.init_etat_initial(line[5:].strip())
+                    if type(info) == str:
+                        return ("line number: " + str(i + 1) + "\n" + info)
                 elif line[:7] == "accept:":
-                    if not machine.init_final(line[7:].strip()):
-                        print("line number: ", i)
-                        return False
+                    info = machine.init_final(line[7:].strip())
+                    if type(info) == str:
+                        return ("line number: " + str(i + 1) + "\n" + info)
+                elif line[:7] == "import:":
+                    info = machine.import_machine(read_file(line[7:].strip()))
+                    if type(info) == str:
+                        return ("line number:" + str(i + 1) + "\n" + line[7:].strip() + '\n' + info)
                 else:
                     line = str(line).split(",")
+                    if '' in line:
+                        return ("Comma at end or start of line " + str(i + 1))
                     if len(line) > 1:
                         prec = [[line[0].strip()], []]
                         for value in line[1:]:
                             prec[1].append([[value.strip()]])
                     else:
-                        print("Incorrect number of elements in line", i)
-                        return False
+                        return ("Incorrect number of elements in line " + str(i + 1))
 
             else:
                 line = str(line).split(",")
-                if len(line) == (len(prec[1]) * 2) + 1:
+                if '' in line:
+                    return ("Comma at end or start of line " + str(i + 1))
+                if len(line) == (len(prec[1]) * 2) + 1 and line[1].strip() not in machine.machine_import_init.keys():
                     prec[0].append(line[0].strip())
                     for n, value in enumerate(line[1:(len(prec[1]) + 1)]):
                         prec[1][n][0].append(value.strip())
                     for n, value in enumerate(line[(len(prec[1]) + 1):]):
                         prec[1][n].append(value.strip())
+                    info = machine.init_transition_ruban(prec)
+                elif len(line) == (len(prec[1])) + 2 and line[1].strip() in machine.machine_import_init.keys():
+                    prec[0].append(line[0].strip())
+                    for n, value in enumerate(line[2:]):
+                        prec[1][n].append(value.strip())
+                    info = machine.connect_machine(line[1].strip(), prec)
                 else:
-                    print("Incorrect number of elements in line", i)
-                    return False
-                machine.init_transition_ruban(prec)
+                    return ("Incorrect number of elements in line " + str(i + 1))
+                if type(info) == str:
+                    return ("line number: " + str(i + 1) + "\n" + info)
                 prec = None
     return machine
 
@@ -184,8 +259,15 @@ if __name__ == '__main__':
     AP.add_argument('file', help='fichier contenant le code de la machine de turing', type=str)
     AP.add_argument('word', help='mot a entrée dans la machine de turing', type=str)
     args = AP.parse_args(sys.argv[1::])
+
     machine = read_file(args.file)
-    if not machine:
+
+    if type(machine) == str:
+        print(machine)
         sys.exit()
 
-    instance_machine(machine, args.word)
+    value = machine.instance_machine(args.word)
+    while type(value) == tuple:
+        print(value[:3])
+        value = machine.mouvement(value[0], value[1], value[2])
+    print(value)
