@@ -1,0 +1,12 @@
+name: EXAMPLE_SEARCH
+init: I
+accept: F
+import: RIGHT.mt
+import: SEARCH.mt
+
+I,0
+q0,RIGHT,-
+
+q0,0
+F,SEARCH,-
+

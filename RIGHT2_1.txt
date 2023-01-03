@@ -1,0 +1,52 @@
+// Va a la derniere valeur a droite sur une machine a 2 bandes sur la premiere bande
+name: RIGHT2_1
+init: I
+accept: F
+
+I,0,_
+I,0,_,>,-
+
+I,0,0
+I,0,0,>,-
+
+I,0,1
+I,0,1,>,-
+
+I,0,#
+I,0,#,>,-
+
+I,1,_
+I,1,_,>,-
+
+I,1,0
+I,1,0,>,-
+
+I,1,#
+I,1,#,>,-
+
+I,1,1
+I,1,1,>,-
+
+I,#,_
+I,#,_,>,-
+
+I,#,0
+I,#,0,>,-
+
+I,#,1
+I,#,1,>,-
+
+I,#,#
+I,#,#,>,-
+
+I,_,#
+F,_,#,<,-
+
+I,_,0
+F,_,0,<,-
+
+I,_,1
+F,_,1,<,-
+
+I,_,_
+F,_,_,<,-

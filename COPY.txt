@@ -1,0 +1,51 @@
+// Copie sur une machine a 2 ruban le premier ruban sur le 2eme a commencer par l'endroit de la tete de lecture du 2eme
+name: COPY
+init: I
+accept: F
+import: LEFT2_1.txt
+
+I,0,0
+qCopie,LEFT2_1,-,-
+
+I,1,0
+qCopie,LEFT2_1,-,-
+
+I,0,1
+qCopie,LEFT2_1,-,-
+
+I,1,1
+qCopie,LEFT2_1,-,-
+
+I,0,_
+qCopie,LEFT2_1,-,-
+
+I,1,_
+qCopie,LEFT2_1,-,-
+
+qCopie,0,0
+qCopie,0,0,>,>
+
+qCopie,1,0
+qCopie,1,1,>,>
+
+qCopie,0,1
+qCopie,0,0,>,>
+
+qCopie,1,1
+qCopie,1,1,>,>
+
+qCopie,0,_
+qCopie,0,0,>,>
+
+qCopie,1,_
+qCopie,1,1,>,>
+
+qCopie,_,0
+F,_,0,<,-
+
+qCopie,_,1
+F,_,1,<,-
+
+qCopie,_,_
+F,_,_,<,<
+

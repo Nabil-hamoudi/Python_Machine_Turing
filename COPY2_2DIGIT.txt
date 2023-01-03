@@ -1,0 +1,22 @@
+// Copy 2 nombre dans le ruban 2 depuis le ruban 1
+name: COPY2_2DIGIT
+init: I
+accept: F
+
+I,0,_
+second,#,0,>,>
+
+I,1,_
+second,#,1,>,>
+
+second,0,_
+third,#,0,>,>
+
+second,1,_
+third,#,1,>,>
+
+third,#,_
+F,#,#,-,>
+
+third,_,_
+F,_,#,<,>

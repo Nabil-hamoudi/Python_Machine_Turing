@@ -1,0 +1,19 @@
+name: ERASE
+init: I
+accept: F
+import: LEFT.txt
+
+I,0
+qErase,LEFT,-
+
+I,1
+qErase,LEFT,-
+
+qErase,0
+qErase,_,>
+
+qErase,1
+qErase,_,>
+
+qErase,_
+F,_,-

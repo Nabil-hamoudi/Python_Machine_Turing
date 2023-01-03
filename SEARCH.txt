@@ -1,0 +1,22 @@
+name: SEARCH
+init: I
+accept: F
+import: LEFT.txt
+
+I,0
+q0,LEFT,-
+
+I,1
+q1,LEFT,-
+
+q0,1
+q0,1,>
+
+q1,0
+q1,0,>
+
+q1,1
+F,1,-
+
+q0,0
+F,0,-
