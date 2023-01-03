@@ -1,6 +1,5 @@
-// Copie sur une machine a 2 ruban
-// Le premier ruban sur le 2eme
-// a partir de l'endoit ou se trouve les tetes de lecture
+// Copie sur une machine à 2 ruban le premier ruban sur le 2eme
+// à partir de l'endoit ou se trouve les tetes de lecture
 
 name: COPY
 init: I
