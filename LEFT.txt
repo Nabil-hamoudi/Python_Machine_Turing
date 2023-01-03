@@ -1,0 +1,15 @@
+// Sur une machine a un ruban
+// Se remplace au debut de celui ci
+
+name: LEFT
+init: I
+accept: F
+
+I,0
+I,0,<
+
+I,1
+I,1,<
+
+I,_
+F,_,>
