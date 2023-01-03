@@ -1,4 +1,4 @@
-// Va a la derniere valeur a droite sur une machine a 2 bandes sur la premiere bande
+// Va a la dernieres valeur à droite sur une machine a 2 bandes sur la première bande
 name: RIGHT2_1
 init: I
 accept: F
